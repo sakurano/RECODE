@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scATAC-seq data - 10X chromium HDF5 file &mdash; RECODE 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../reference/index.html" />
+    <link rel="prev" title="scRNA-seq data - 10X chromium HDF5 file" href="example_10X_RNA.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> RECODE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="example_10X_RNA.html">scRNA-seq data - 10X chromium HDF5 file</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scATAC-seq data - 10X chromium HDF5 file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_example.html">Using Treasure Data with Python and Pandas</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RECODE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Examples</a> &raquo;</li>
+      <li>scATAC-seq data - 10X chromium HDF5 file</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/example_10X_ATAC.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="scatac-seq-data-10x-chromium-hdf5-file">
+<h1>scATAC-seq data - 10X chromium HDF5 file<a class="headerlink" href="#scatac-seq-data-10x-chromium-hdf5-file" title="Permalink to this headline"></a></h1>
+<p>We show an exmaple for scATAC-seq data produced by 10X Chromium.
+We use sample <cite>5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (Next GEM v1.1)</cite> (4,623 cells and 135,377 peaks) in <a class="reference external" href="https://www.10xgenomics.com/jp/resources/datasets">10X Genomics Datasets</a>.
+The test data is directly avairable from <cite>Feature / cell matrix HDF5 (filtered)</cite> in <a class="reference external" href="https://www.10xgenomics.com/jp/resources/datasets/5-k-peripheral-blood-mononuclear-cells-pbm-cs-from-a-healthy-donor-next-gem-v-1-1-1-1-standard-2-0-0">here</a> (registration required).</p>
+<p>We use <a class="reference external" href="https://scanpy.readthedocs.io/en/stable/">scanpy</a> to read/write 10X HDF5 file (***.h5).
+Import  <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code>, and <code class="docutils literal notranslate"><span class="pre">scanpy</span></code> in addlition to <code class="docutils literal notranslate"><span class="pre">screcode</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">screcode</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scanpy</span>
+</pre></div>
+</div>
+<p>Imput data from HDF5 file (***.h5).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">h5_file</span> <span class="o">=</span> <span class="s1">&#39;atac_pbmc_5k_nextgem_filtered_peak_bc_matrix.h5&#39;</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">scanpy</span><span class="o">.</span><span class="n">readwrite</span><span class="o">.</span><span class="n">_read_v3_10x_h5</span><span class="p">(</span><span class="n">h5_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Apply RECODE with option <code class="docutils literal notranslate"><span class="pre">seq_target='ATAC'</span></code>. The denoised data is created in <code class="docutils literal notranslate"><span class="pre">data_RECODE</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span> <span class="o">=</span> <span class="n">screcode</span><span class="o">.</span><span class="n">RECODE</span><span class="p">(</span><span class="n">seq_target</span><span class="o">=</span><span class="s1">&#39;ATAC&#39;</span><span class="p">)</span>
+<span class="n">data_RECODE</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="n">RECODE</span> <span class="k">for</span> <span class="n">scATAC</span><span class="o">-</span><span class="n">seq</span>
+<span class="n">end</span> <span class="n">RECODE</span> <span class="k">for</span> <span class="n">scATAC</span><span class="o">-</span><span class="n">seq</span>
+<span class="n">log</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;seq_target&#39;</span><span class="p">:</span> <span class="s1">&#39;ATAC&#39;</span><span class="p">,</span> <span class="s1">&#39;#significant peaks&#39;</span><span class="p">:</span> <span class="mi">128923</span><span class="p">,</span> <span class="s1">&#39;#non-significant peaks&#39;</span><span class="p">:</span> <span class="mi">6450</span><span class="p">,</span> <span class="s1">&#39;#silent peaks&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;ell&#39;</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span> <span class="s1">&#39;Elapsed_time&#39;</span><span class="p">:</span> <span class="s1">&#39;209.465[sec]&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Write the denoised data as HDF5 file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adata_RECODE</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">data_RECODE</span><span class="p">)</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;noise_variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">noise_variance_</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;normalized_variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">normalized_variance_</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;significance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">significance_</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
+<span class="n">output_filename</span> <span class="o">=</span> <span class="s1">&#39;atac_pbmc_5k_nextgem_filtered_peak_bc_matrix_RECODE.h5&#39;</span>
+<span class="n">adata_RECODE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Check applicability.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span><span class="o">.</span><span class="n">check_applicability</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">applicabity</span><span class="p">:</span> <span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="n">Strongly</span> <span class="n">applicable</span>
+</pre></div>
+</div>
+<img alt="../_images/Example_10X_ATAC_applicability.png" src="../_images/Example_10X_ATAC_applicability.png" />
+<p>Show preprocessing of scATAC-seq data and 5 procedures of RECODE.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span><span class="o">.</span><span class="n">plot_procedures</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example_10X_ATAC_1_Original.png" src="../_images/Example_10X_ATAC_1_Original.png" />
+<img alt="../_images/Example_10X_ATAC_2_Normalized.png" src="../_images/Example_10X_ATAC_2_Normalized.png" />
+<img alt="../_images/Example_10X_ATAC_3_Projected.png" src="../_images/Example_10X_ATAC_3_Projected.png" />
+<img alt="../_images/Example_10X_ATAC_4_Variance-modified.png" src="../_images/Example_10X_ATAC_4_Variance-modified.png" />
+<img alt="../_images/Example_10X_ATAC_5_Denoised.png" src="../_images/Example_10X_ATAC_5_Denoised.png" />
+<p>Show scatter plots of mean versus variance of log-scaled data before and after RECODE.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span><span class="o">.</span><span class="n">plot_mean_variance</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example_10X_ATAC_mean_var_Original.png" src="../_images/Example_10X_ATAC_mean_var_Original.png" />
+<img alt="../_images/Example_10X_ATAC_mean_var_RECODE.png" src="../_images/Example_10X_ATAC_mean_var_RECODE.png" />
+<p>Show scatter plots of mean versus CV (coefficient of variation) before and after RECODE.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span><span class="o">.</span><span class="n">plot_mean_cv</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example_10X_ATAC_mean_cv_Original.png" src="../_images/Example_10X_ATAC_mean_cv_Original.png" />
+<img alt="../_images/Example_10X_ATAC_mean_cv_RECODE.png" src="../_images/Example_10X_ATAC_mean_cv_RECODE.png" />
+<p>Check the log.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recode</span><span class="o">.</span><span class="n">log_</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;seq_target&#39;</span><span class="p">:</span> <span class="s1">&#39;ATAC&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;#significant peaks&#39;</span><span class="p">:</span> <span class="mi">128923</span><span class="p">,</span>
+ <span class="s1">&#39;#non-significant peaks&#39;</span><span class="p">:</span> <span class="mi">6450</span><span class="p">,</span>
+ <span class="s1">&#39;#silent peaks&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ <span class="s1">&#39;ell&#39;</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span>
+ <span class="s1">&#39;Elapsed_time&#39;</span><span class="p">:</span> <span class="s1">&#39;209.465[sec]&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Applicability&#39;</span><span class="p">:</span> <span class="s1">&#39;(A) Strong applicable&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Rate of 0 &lt; normalized variance &lt; 0.9&#39;</span><span class="p">:</span> <span class="s1">&#39;0%&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;Peak density of normalized variance&#39;</span><span class="p">:</span> <span class="mf">1.0792379955790716</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Show the peak rank based on the CV (detection rate&gt;1%).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">n_show_peaks</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">detection_rate_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">adata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">idx_dr</span> <span class="o">=</span> <span class="n">detection_rate_</span><span class="o">&gt;</span><span class="mf">0.01</span>
+<span class="n">idx_rank</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">recode</span><span class="o">.</span><span class="n">cv_</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">peakrank</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;peak&#39;</span><span class="p">:</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">][</span><span class="n">idx_rank</span><span class="p">],</span>
+               <span class="s1">&#39;cv&#39;</span><span class="p">:</span><span class="n">recode</span><span class="o">.</span><span class="n">cv_</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">][</span><span class="n">idx_rank</span><span class="p">],</span>
+               <span class="s1">&#39;normalized_variance&#39;</span><span class="p">:</span><span class="n">recode</span><span class="o">.</span><span class="n">normalized_variance_</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">][</span><span class="n">idx_rank</span><span class="p">],</span>
+               <span class="s1">&#39;detection_rate&#39;</span><span class="p">:</span><span class="n">detection_rate_</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">][</span><span class="n">idx_rank</span><span class="p">],</span>
+               <span class="s1">&#39;significance&#39;</span><span class="p">:</span><span class="n">recode</span><span class="o">.</span><span class="n">significance_</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">][</span><span class="n">idx_rank</span><span class="p">]},</span>
+              <span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">idx_dr</span><span class="p">]))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">peakrank</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n_show_peaks</span><span class="p">)</span>
+</pre></div>
+</div>
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+      <table border="1" class="dataframe">
+              <thead>
+                <tr style="text-align: right;">
+                  <th></th>
+                  <th>peak</th>
+                  <th>cv</th>
+                  <th>normalized_variance</th>
+                  <th>detection_rate</th>
+                  <th>significance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>1</th>
+                  <td>chr12:56537100-56538049</td>
+                  <td>22.385567</td>
+                  <td>1.950203</td>
+                  <td>0.012330</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>2</th>
+                  <td>chr5:172085397-172086190</td>
+                  <td>21.785703</td>
+                  <td>1.925941</td>
+                  <td>0.013628</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>3</th>
+                  <td>chr5:142849473-142850355</td>
+                  <td>20.746717</td>
+                  <td>1.912967</td>
+                  <td>0.013195</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>4</th>
+                  <td>chr15:65211823-65212691</td>
+                  <td>19.731178</td>
+                  <td>1.941612</td>
+                  <td>0.013628</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>5</th>
+                  <td>chr12:55983356-55984183</td>
+                  <td>19.309734</td>
+                  <td>2.739442</td>
+                  <td>0.021847</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>6</th>
+                  <td>chr8:145026449-145027358</td>
+                  <td>18.900971</td>
+                  <td>1.880035</td>
+                  <td>0.016223</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>7</th>
+                  <td>chr6:146878018-146878580</td>
+                  <td>18.015273</td>
+                  <td>1.003125</td>
+                  <td>0.010599</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>8</th>
+                  <td>chrX:23844287-23845208</td>
+                  <td>17.899955</td>
+                  <td>2.794661</td>
+                  <td>0.024876</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>9</th>
+                  <td>chr3:184305351-184306241</td>
+                  <td>17.598467</td>
+                  <td>1.009926</td>
+                  <td>0.010383</td>
+                  <td>significant</td>
+                </tr>
+                <tr>
+                  <th>10</th>
+                  <td>chr12:56288643-56289492</td>
+                  <td>17.502620</td>
+                  <td>1.026666</td>
+                  <td>0.010167</td>
+                  <td>significant</td>
+                </tr>
+              </tbody>
+      </table>
+      </div></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="example_10X_RNA.html" class="btn btn-neutral float-left" title="scRNA-seq data - 10X chromium HDF5 file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Yusuke Imoto.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
