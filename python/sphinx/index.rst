@@ -37,6 +37,7 @@ To use RECODE, import ``screcode``.
 	
 	examples/index
 	reference/index
+	basic_example.ipynb
 
 
 Indices and tables
